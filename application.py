@@ -1,3 +1,4 @@
+#import pyximport; pyximport.install()
 import sys
 import random
 import settings
@@ -65,22 +66,88 @@ class Application(object):
 
 	def process_events(self):
 
+		def close():
+			self.window.close()
+
+		def toggle_attractive_mouse():
+			settings.attractive_mouse = not settings.attractive_mouse
+
+		def toggle_scary_mouse():
+			settings.scary_mouse = not settings.scary_mouse
+
+		def scatter_boids():
+			for e in self.entities:
+				e.scatter()
+
+		def increase_boid_sight_radius():
+			settings.boid_sight_radius += 10
+
+		def decrease_boid_sight_radius():
+			settings.boid_sight_radius -= 10
+
+		def increase_desired_separation():
+			settings.desired_separation += 10
+
+		def decrease_desired_separation():
+			settings.desired_separation -= 10
+
+		def increase_max_steering_force():
+			settings.max_steering_force += 10
+
+		def decrease_max_steering_force():
+			settings.max_steering_force -= 10
+
+		def increase_separation_factor():
+			settings.separation += 0.1
+
+		def decrease_separation_factor():
+			settings.separation -= 0.1
+
+		def increase_alignment_factor():
+			settings.alignment += 0.1
+
+		def decrease_alignment_factor():
+			settings.alignment -= 0.1
+
+		def increase_cohesion_factor():
+			settings.cohesion += 0.1
+
+		def decrease_cohesion_factor():
+			settings.cohesion -= 0.1
+
+		actions = {
+			sf.Keyboard.ESCAPE : close,
+			sf.Keyboard.A : toggle_attractive_mouse,
+			sf.Keyboard.S : toggle_scary_mouse,
+			sf.Keyboard.D : scatter_boids,
+			sf.Keyboard.NUM1: increase_boid_sight_radius,
+			sf.Keyboard.NUM2: decrease_boid_sight_radius,
+			sf.Keyboard.NUM3: increase_desired_separation,
+			sf.Keyboard.NUM4: decrease_desired_separation,
+			sf.Keyboard.NUM5: increase_max_steering_force,
+			sf.Keyboard.NUM6: decrease_max_steering_force,
+			sf.Keyboard.Q: increase_separation_factor,
+			sf.Keyboard.W: decrease_separation_factor,
+			sf.Keyboard.E: increase_alignment_factor,
+			sf.Keyboard.R: decrease_alignment_factor,
+			sf.Keyboard.T: increase_cohesion_factor,
+			sf.Keyboard.Y: decrease_cohesion_factor
+		}
+
+
 		for event in self.window.events:
 
 			if (type(event) is sf.CloseEvent):
-				self.window.close()
+				close()
 
 			elif (type(event) is sf.MouseButtonEvent and event.pressed):
 				self.entities.append(Entity(event.position))
 
 			elif (type(event) is sf.KeyEvent and event.pressed):
-
-				if (event.code is sf.Keyboard.ESCAPE):
-					self.window.close()
-
-				elif (event.code is sf.Keyboard.D):
-					for e in self.entities:
-						e.scatter()
+				try:
+					actions.get(event.code)()
+				except TypeError:
+					pass
 
 
 	def update(self, dt):
@@ -129,6 +196,7 @@ class Application(object):
 
 				d = s.position - f.position
 				distance = utility.length(d)
+
 				if (distance < settings.boid_sight_radius):
 					f.centre_of_mass += s.position
 					s.centre_of_mass += f.position
@@ -137,10 +205,10 @@ class Application(object):
 					f.num_nearby_entities += 1
 					s.num_nearby_entities += 1
 
-				# SEPARATE
-				if (distance < settings.desired_separation):
-					f.velocity -= d * (settings.desired_separation/distance - 1) * settings.separation
-					s.velocity += d * (settings.desired_separation/distance - 1) * settings.separation
+					# SEPARATE
+					if (distance < settings.desired_separation):
+						f.velocity -= d * (settings.desired_separation/distance - 1) * settings.separation
+						s.velocity += d * (settings.desired_separation/distance - 1) * settings.separation
 
 			if (not f.num_nearby_entities):
 				continue

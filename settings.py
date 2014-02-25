@@ -15,8 +15,8 @@ attractive_mouse = False
 scary_mouse = False
 
 boid_sight_radius = 100
-desired_separation = 60
-max_steering_force = 50
+desired_separation = 50
+max_steering_force = 500
 
 separation = 0.1
 alignment = 0.1
