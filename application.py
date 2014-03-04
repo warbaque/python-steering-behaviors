@@ -1,4 +1,3 @@
-#import pyximport; pyximport.install()
 import sys
 import random
 import settings
@@ -117,21 +116,21 @@ class Application(object):
 
 		actions = {
 			sf.Keyboard.ESCAPE : close,
-			sf.Keyboard.A : toggle_attractive_mouse,
-			sf.Keyboard.S : toggle_scary_mouse,
-			sf.Keyboard.D : scatter_boids,
-			sf.Keyboard.NUM1: increase_boid_sight_radius,
-			sf.Keyboard.NUM2: decrease_boid_sight_radius,
-			sf.Keyboard.NUM3: increase_desired_separation,
-			sf.Keyboard.NUM4: decrease_desired_separation,
-			sf.Keyboard.NUM5: increase_max_steering_force,
-			sf.Keyboard.NUM6: decrease_max_steering_force,
-			sf.Keyboard.Q: increase_separation_factor,
-			sf.Keyboard.W: decrease_separation_factor,
-			sf.Keyboard.E: increase_alignment_factor,
-			sf.Keyboard.R: decrease_alignment_factor,
-			sf.Keyboard.T: increase_cohesion_factor,
-			sf.Keyboard.Y: decrease_cohesion_factor
+			settings.toggle_attractive_mouse : toggle_attractive_mouse,
+			settings.toggle_scary_mouse : toggle_scary_mouse,
+			settings.scatter_boids : scatter_boids,
+			settings.increase_boid_sight_radius : increase_boid_sight_radius,
+			settings.decrease_boid_sight_radius : decrease_boid_sight_radius,
+			settings.increase_desired_separation : increase_desired_separation,
+			settings.decrease_desired_separation : decrease_desired_separation,
+			settings.increase_max_steering_force : increase_max_steering_force,
+			settings.decrease_max_steering_force : decrease_max_steering_force,
+			settings.increase_separation_factor : increase_separation_factor,
+			settings.decrease_separation_factor : decrease_separation_factor,
+			settings.increase_alignment_factor : increase_alignment_factor,
+			settings.decrease_alignment_factor : decrease_alignment_factor,
+			settings.increase_cohesion_factor : increase_cohesion_factor,
+			settings.decrease_cohesion_factor : decrease_cohesion_factor
 		}
 
 
@@ -191,6 +190,22 @@ class Application(object):
 			nearby_boids = self.grid.get_nearby_entities(f,
 				settings.boid_sight_radius)
 
+
+			if (settings.scary_mouse):
+				d = sf.Mouse.get_position(self.window) - f.position
+				distance = utility.length(d)
+				if (distance < settings.ENTITY_SIZE * 10):
+					steer = d * (settings.ENTITY_SIZE * 10/distance - 1)
+					if (utility.length(steer) > settings.max_steering_force):
+						steer = utility.unit_vector(steer) * settings.max_steering_force
+					f.velocity -= steer
+
+
+			if (settings.attractive_mouse):
+				f.centre_of_mass += sf.Mouse.get_position(self.window)
+				f.num_nearby_entities += 1
+
+
 			for s in nearby_boids:
 				self.statistics.collision_checks += 1
 
@@ -207,8 +222,11 @@ class Application(object):
 
 					# SEPARATE
 					if (distance < settings.desired_separation):
-						f.velocity -= d * (settings.desired_separation/distance - 1) * settings.separation
-						s.velocity += d * (settings.desired_separation/distance - 1) * settings.separation
+						steer = d * (settings.desired_separation/distance - 1) * settings.separation
+						if (utility.length(steer) > settings.max_steering_force):
+							steer = utility.unit_vector(steer) * settings.max_steering_force
+						f.velocity -= steer
+						s.velocity += steer
 
 			if (not f.num_nearby_entities):
 				continue

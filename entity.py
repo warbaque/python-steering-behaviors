@@ -24,8 +24,8 @@ class Entity(sf.Drawable):
 		self.shape.outline_color = sf.Color(r, g, b, 200)
 		self.shape.outline_thickness = 1
 
-		v_x = random.randrange(200) - 100
-		v_y = random.randrange(200) - 100
+		v_x = random.randrange(-max_speed, max_speed + 1)
+		v_y = random.randrange(-max_speed, max_speed + 1)
 		self.position = position
 		self.velocity = sf.Vector2(v_x, v_y)
 
@@ -63,5 +63,5 @@ class Entity(sf.Drawable):
 
 		self.position.x = random.randrange(settings.WIDTH)
 		self.position.y = random.randrange(settings.HEIGHT)
-		self.velocity.x = random.randrange(2 * max_speed) - max_speed
-		self.velocity.y = random.randrange(2 * max_speed) - max_speed
+		self.velocity.x = random.randrange(-max_speed, max_speed + 1)
+		self.velocity.y = random.randrange(-max_speed, max_speed + 1)
