@@ -17,9 +17,9 @@ class Entity(sf.Drawable):
 		self.shape = sf.CircleShape()
 		self.shape.radius = settings.ENTITY_SIZE/2
 
-		r = 55 + random.randrange(200)
-		g = 55 + random.randrange(200)
-		b = 55 + random.randrange(200)
+		r = random.randrange(56, 256)
+		g = random.randrange(56, 256)
+		b = random.randrange(56, 256)
 		self.shape.fill_color = sf.Color(r, g, b, 50)
 		self.shape.outline_color = sf.Color(r, g, b, 200)
 		self.shape.outline_thickness = 1

@@ -103,16 +103,16 @@ class Application(object):
 			settings.separation -= 0.1
 
 		def increase_alignment_factor():
-			settings.alignment += 0.1
+			settings.alignment += 0.01
 
 		def decrease_alignment_factor():
-			settings.alignment -= 0.1
+			settings.alignment -= 0.01
 
 		def increase_cohesion_factor():
-			settings.cohesion += 0.1
+			settings.cohesion += 0.01
 
 		def decrease_cohesion_factor():
-			settings.cohesion -= 0.1
+			settings.cohesion -= 0.01
 
 		actions = {
 			sf.Keyboard.ESCAPE : close,

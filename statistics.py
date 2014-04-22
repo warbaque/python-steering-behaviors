@@ -48,9 +48,9 @@ class Statistics(sf.Drawable):
 				"Boid sight radius  : {}".format(settings.boid_sight_radius),
 				"Desired Separation : {}".format(settings.desired_separation),
 				"Max steering force : {}".format(settings.max_steering_force),
-				"Separation factor  : {:.1f}".format(settings.separation),
-				"Alignment factor   : {:.1f}".format(settings.alignment),
-				"Cohesion factor    : {:.1f}".format(settings.cohesion))
+				"Separation factor  : {:.2f}".format(settings.separation),
+				"Alignment factor   : {:.2f}".format(settings.alignment),
+				"Cohesion factor    : {:.2f}".format(settings.cohesion))
 
 			self.settings_text.string = text
 
