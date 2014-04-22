@@ -28,7 +28,7 @@ class Application(object):
 			sf.VideoMode(width, height),
 			"Steering Behaviors For Autonomous Characters",
 			sf.Style.DEFAULT, window_settings)
-		self.window.vertical_synchronization = False
+		self.window.vertical_synchronization = True
 
 		self.entities = []
 		self.grid = CollisionGrid(width, height, cell_size)
@@ -67,6 +67,9 @@ class Application(object):
 
 		def close():
 			self.window.close()
+
+		def delete_entities():
+			del self.entities[:]
 
 		def toggle_attractive_mouse():
 			settings.attractive_mouse = not settings.attractive_mouse
@@ -116,6 +119,7 @@ class Application(object):
 
 		actions = {
 			sf.Keyboard.ESCAPE : close,
+			settings.delete_entities : delete_entities,
 			settings.toggle_attractive_mouse : toggle_attractive_mouse,
 			settings.toggle_scary_mouse : toggle_scary_mouse,
 			settings.scatter_boids : scatter_boids,
@@ -190,26 +194,30 @@ class Application(object):
 			nearby_boids = self.grid.get_nearby_entities(f,
 				settings.boid_sight_radius)
 
-
+			# SCARY MOUSE
 			if (settings.scary_mouse):
 				d = sf.Mouse.get_position(self.window) - f.position
+				if (not d.x and not d.y):
+					d.x = 1
 				distance = utility.length(d)
-				if (distance < settings.ENTITY_SIZE * 10):
-					steer = d * (settings.ENTITY_SIZE * 10/distance - 1)
+				if (distance < settings.ENTITY_SIZE * 7):
+					steer = d * (settings.ENTITY_SIZE * 7/distance - 1)
 					if (utility.length(steer) > settings.max_steering_force):
 						steer = utility.unit_vector(steer) * settings.max_steering_force
 					f.velocity -= steer
 
-
+			# ATTRACTIVE MOUSE
 			if (settings.attractive_mouse):
 				f.centre_of_mass += sf.Mouse.get_position(self.window)
 				f.num_nearby_entities += 1
 
-
+			# NEARBY BOIDS
 			for s in nearby_boids:
 				self.statistics.collision_checks += 1
 
 				d = s.position - f.position
+				if (not d.x and not d.y):
+					d.x = 1
 				distance = utility.length(d)
 
 				if (distance < settings.boid_sight_radius):

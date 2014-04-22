@@ -10,7 +10,7 @@ HEIGHT = 720
 CELL_SIZE = 60
 
 ENTITY_SIZE = 20
-ENTITY_MAX_SPEED = 150
+ENTITY_MAX_SPEED = 100
 INITIAL_ENTITIES = 50
 
 
@@ -29,6 +29,7 @@ cohesion = 0.1
 
 
 # KEYBINDINGS
+delete_entities             = sf.Keyboard.DELETE
 toggle_attractive_mouse     = sf.Keyboard.A
 toggle_scary_mouse          = sf.Keyboard.S
 scatter_boids               = sf.Keyboard.D

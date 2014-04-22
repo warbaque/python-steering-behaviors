@@ -14,8 +14,7 @@ class Entity(sf.Drawable):
 
 		sf.Drawable.__init__(self)
 
-		self.shape = sf.CircleShape()
-		self.shape.radius = settings.ENTITY_SIZE/2
+		self.shape = sf.CircleShape(settings.ENTITY_SIZE/2)
 
 		r = random.randrange(56, 256)
 		g = random.randrange(56, 256)
@@ -31,7 +30,7 @@ class Entity(sf.Drawable):
 
 		self.line = sf.VertexArray(sf.PrimitiveType.LINES, 2)
 		self.line[0].color = sf.Color(r, g, b, 200)
-		self.line[1].color = sf.Color(r, g, b, 10)
+		self.line[1].color = sf.Color(r, g, b, 50)
 
 		self.centre_of_mass = sf.Vector2()
 		self.average_velocity = sf.Vector2()
@@ -58,6 +57,7 @@ class Entity(sf.Drawable):
 		self.line[1].position = self.position + self.velocity * 0.3
 		target.draw(self.shape, states)
 		target.draw(self.line, states)
+
 
 	def scatter(self):
 
