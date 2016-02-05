@@ -8,7 +8,7 @@ from entity import Entity
 from collision_grid import CollisionGrid
 
 
-time_per_frame = settings.TIME_PER_FRAME
+time_per_update = settings.TIME_PER_UPDATE
 
 width = settings.WIDTH
 height = settings.HEIGHT
@@ -28,10 +28,11 @@ class Application(object):
 			sf.VideoMode(width, height),
 			"Steering Behaviors For Autonomous Characters",
 			sf.Style.DEFAULT, window_settings)
-		self.window.vertical_synchronization = True
+		self.window.vertical_synchronization = False
 
 		self.entities = []
 		self.grid = CollisionGrid(width, height, cell_size)
+		self.collision = 0
 
 
 	def run(self):
@@ -48,25 +49,31 @@ class Application(object):
 			dt = clock.restart()
 			time_since_last_update += dt
 
-			while time_since_last_update > time_per_frame:
+			while time_since_last_update > time_per_update:
+				time_since_last_update -= time_per_update
 
-				time_since_last_update -= time_per_frame
+				t = clock.elapsed_time
+				self.update(time_per_update)
+				t = clock.elapsed_time - t
+				self.statistics.t_update.append(t.microseconds)
 
-				self.process_events()
+			self.process_events()
+			self.statistics.update_texts(dt)
 
-				self.update_grid()
-				self.handle_collision()
-				self.grid.clear()
-				self.update(time_per_frame)
-
-			self.statistics.update(dt)
+			t = clock.elapsed_time
 			self.render()
+			self.statistics.num_frames += 1
+			t = clock.elapsed_time - t
+			self.statistics.t_render.append(t.microseconds)
 
 
 	def process_events(self):
 
 		def close():
 			self.window.close()
+
+		def toggle_help():
+			self.statistics.help ^= True
 
 		def delete_entities():
 			del self.entities[:]
@@ -119,6 +126,7 @@ class Application(object):
 
 		actions = {
 			sf.Keyboard.ESCAPE : close,
+			settings.toggle_help : toggle_help,
 			settings.delete_entities : delete_entities,
 			settings.toggle_attractive_mouse : toggle_attractive_mouse,
 			settings.toggle_scary_mouse : toggle_scary_mouse,
@@ -154,6 +162,13 @@ class Application(object):
 
 
 	def update(self, dt):
+
+		if self.collision == 5:
+			self.update_grid()
+			self.handle_collision()
+			self.grid.clear()
+			self.collision = 0
+		self.collision += 1
 
 		for e in self.entities:
 			e.update(dt)

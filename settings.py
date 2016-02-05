@@ -3,7 +3,7 @@ import sfml as sf
 
 # STATIC VALUES
 
-TIME_PER_FRAME = sf.seconds(1/60)
+TIME_PER_UPDATE = sf.seconds(1/60)
 
 WIDTH = 1280
 HEIGHT = 720
@@ -12,6 +12,8 @@ CELL_SIZE = 60
 ENTITY_SIZE = 20
 ENTITY_MAX_SPEED = 100
 INITIAL_ENTITIES = 50
+
+HELP_ON = True
 
 
 # DEFAULT FLOCKING PARAMETERS
@@ -29,6 +31,7 @@ cohesion = 0.1
 
 
 # KEYBINDINGS
+toggle_help                 = sf.Keyboard.F1
 delete_entities             = sf.Keyboard.DELETE
 toggle_attractive_mouse     = sf.Keyboard.A
 toggle_scary_mouse          = sf.Keyboard.S
